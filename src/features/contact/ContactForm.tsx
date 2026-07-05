@@ -9,6 +9,12 @@ type ContactFormState = {
 };
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
+type ContactResponse = {
+  delivered?: boolean;
+  mode?: string;
+  provider?: string;
+  message?: string;
+};
 
 const initialFormState: ContactFormState = {
   name: "",
@@ -19,6 +25,7 @@ const initialFormState: ContactFormState = {
 export function ContactForm() {
   const [form, setForm] = useState<ContactFormState>(initialFormState);
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [statusMessage, setStatusMessage] = useState<string>("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,14 +38,22 @@ export function ContactForm() {
         body: JSON.stringify(form),
       });
 
+      const result = (await response.json()) as ContactResponse;
+
       if (!response.ok) {
         throw new Error("Contact request failed");
       }
 
       setForm(initialFormState);
       setSubmitState("success");
+      setStatusMessage(
+        result.delivered
+          ? "Mensaje enviado correctamente."
+          : result.message ?? "Mensaje recibido en modo local. Falta configurar el proveedor de email.",
+      );
     } catch {
       setSubmitState("error");
+      setStatusMessage("No se ha podido enviar. Revisa la configuración del endpoint de contacto.");
     }
   }
 
@@ -69,10 +84,8 @@ export function ContactForm() {
       <button className="form-submit" type="submit" disabled={submitState === "submitting"}>
         {submitState === "submitting" ? "Enviando..." : "Enviar mensaje"}
       </button>
-      {submitState === "success" ? <p className="form-status">Mensaje enviado correctamente.</p> : null}
-      {submitState === "error" ? (
-        <p className="form-status form-status-error">No se ha podido enviar. Revisa la configuración del endpoint de contacto.</p>
-      ) : null}
+      {submitState === "success" ? <p className="form-status">{statusMessage}</p> : null}
+      {submitState === "error" ? <p className="form-status form-status-error">{statusMessage}</p> : null}
     </form>
   );
 }

@@ -71,6 +71,7 @@ function copyAsset(relativePath) {
   return true;
 }
 
+fs.rmSync(galleryAssetsDir, { recursive: true, force: true });
 fs.mkdirSync(galleryAssetsDir, { recursive: true });
 fs.mkdirSync(galleryDataDir, { recursive: true });
 
@@ -88,12 +89,10 @@ const galleryItems = readLegacyItems()
     const fullPathExists = fs.existsSync(path.join(legacyRoot, fullPath));
     const safeFullPath = fullPathExists ? fullPath : thumbnailPath;
 
-    for (const assetPath of [thumbnailPath, safeFullPath]) {
-      const assetName = destinationName(assetPath);
+    const assetName = destinationName(safeFullPath);
 
-      if (!copied.has(assetName) && copyAsset(assetPath)) {
-        copied.add(assetName);
-      }
+    if (!copied.has(assetName) && copyAsset(safeFullPath)) {
+      copied.add(assetName);
     }
 
     return {
@@ -101,7 +100,7 @@ const galleryItems = readLegacyItems()
       title: decodeLegacyText(item.overlayTitle).replace(/^>/, ""),
       category: category[0],
       categoryLabel: category[1],
-      thumbnailUrl: `/images/gallery/${destinationName(thumbnailPath)}`,
+      thumbnailUrl: `/images/gallery/${destinationName(safeFullPath)}`,
       fullUrl: `/images/gallery/${destinationName(safeFullPath)}`,
       alt: decodeLegacyText(item.overlayLinkTitle || item.overlayTitle),
       featured: index < 12,
