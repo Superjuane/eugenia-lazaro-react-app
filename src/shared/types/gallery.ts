@@ -1,17 +1,15 @@
-export type GalleryCategory =
-  | "sillas"
-  | "mesas-sillas"
-  | "carteles"
-  | "packs"
-  | "cajas"
-  | "bandejas"
-  | "otros";
+export type GalleryGroup = {
+  id: string;
+  label: string;
+};
 
 export type GalleryItem = {
   id: string;
   title: string;
-  category: GalleryCategory;
+  category: string;
   categoryLabel: string;
+  etiquetas: string[];
+  colors: string[];
   alt: string;
   thumbnailUrl: string;
   fullUrl: string;

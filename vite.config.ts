@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import type { IncomingMessage } from 'node:http'
 
@@ -15,8 +15,26 @@ function readRequestBody(request: IncomingMessage) {
   })
 }
 
+function parseCookies(cookieHeader = '') {
+  return cookieHeader.split(';').reduce<Record<string, string>>((cookies, cookie) => {
+    const [name, ...valueParts] = cookie.trim().split('=')
+
+    if (name) {
+      cookies[name] = decodeURIComponent(valueParts.join('='))
+    }
+
+    return cookies
+  }, {})
+}
+
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const adminUsername = env.ADMIN_USERNAME ?? 'admin'
+  const adminPassword = env.ADMIN_PASSWORD ?? 'admin'
+  const adminCookieName = 'eugenia_admin_session'
+
+  return {
   plugins: [
     react(),
     {
@@ -52,7 +70,62 @@ export default defineConfig({
             }),
           )
         })
+
+        server.middlewares.use('/api/admin/login', async (request, response) => {
+          if (request.method !== 'POST') {
+            response.statusCode = 405
+            response.setHeader('Content-Type', 'application/json')
+            response.end(JSON.stringify({ error: 'Method not allowed' }))
+            return
+          }
+
+          const body = await readRequestBody(request)
+          const payload = JSON.parse(body || '{}') as { username?: string; password?: string }
+
+          if (payload.username !== adminUsername || payload.password !== adminPassword) {
+            response.statusCode = 401
+            response.setHeader('Content-Type', 'application/json')
+            response.end(JSON.stringify({ error: 'Invalid credentials' }))
+            return
+          }
+
+          response.statusCode = 200
+          response.setHeader('Set-Cookie', `${adminCookieName}=local-dev-session; Path=/; SameSite=Lax; Max-Age=604800`)
+          response.setHeader('Content-Type', 'application/json')
+          response.end(JSON.stringify({ ok: true, username: adminUsername }))
+        })
+
+        server.middlewares.use('/api/admin/session', (request, response) => {
+          if (request.method !== 'GET') {
+            response.statusCode = 405
+            response.setHeader('Content-Type', 'application/json')
+            response.end(JSON.stringify({ error: 'Method not allowed' }))
+            return
+          }
+
+          const cookies = parseCookies(request.headers.cookie)
+          const authenticated = cookies[adminCookieName] === 'local-dev-session'
+
+          response.statusCode = 200
+          response.setHeader('Content-Type', 'application/json')
+          response.end(JSON.stringify({ authenticated, username: authenticated ? adminUsername : null }))
+        })
+
+        server.middlewares.use('/api/admin/logout', (request, response) => {
+          if (request.method !== 'POST') {
+            response.statusCode = 405
+            response.setHeader('Content-Type', 'application/json')
+            response.end(JSON.stringify({ error: 'Method not allowed' }))
+            return
+          }
+
+          response.statusCode = 200
+          response.setHeader('Set-Cookie', `${adminCookieName}=; Path=/; SameSite=Lax; Max-Age=0`)
+          response.setHeader('Content-Type', 'application/json')
+          response.end(JSON.stringify({ ok: true }))
+        })
       },
     },
   ],
+  }
 })
