@@ -1,0 +1,17 @@
+:root {
+  --color-sky: #81b9ea;
+  --color-sky-deep: #478baa;
+  --color-ink: #253238;
+  --color-muted: #6d7b80;
+  --color-surface: #ffffff;
+  --color-cloud: #f8fbfd;
+  --color-soft: #f2f7f9;
+  --color-blush: #ffe8de;
+  --color-mint: #d9f0e4;
+  --color-sun: #ffd76a;
+  --color-line: rgba(37, 50, 56, 0.14);
+  --shadow-soft: 0 18px 44px rgba(35, 56, 68, 0.12);
+  --shadow-small: 0 8px 20px rgba(35, 56, 68, 0.09);
+  --radius: 8px;
+  --page-max: 1160px;
+}
