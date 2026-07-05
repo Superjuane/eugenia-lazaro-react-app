@@ -4,9 +4,11 @@ import type { GalleryItem } from "../../shared/types/gallery";
 type GalleryLightboxProps = {
   item: GalleryItem | null;
   onClose: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
 };
 
-export function GalleryLightbox({ item, onClose }: GalleryLightboxProps) {
+export function GalleryLightbox({ item, onClose, onNext, onPrevious }: GalleryLightboxProps) {
   useEffect(() => {
     if (!item) {
       return undefined;
@@ -15,6 +17,14 @@ export function GalleryLightbox({ item, onClose }: GalleryLightboxProps) {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
+      }
+
+      if (event.key === "ArrowRight") {
+        onNext();
+      }
+
+      if (event.key === "ArrowLeft") {
+        onPrevious();
       }
     };
 
@@ -25,7 +35,7 @@ export function GalleryLightbox({ item, onClose }: GalleryLightboxProps) {
       document.body.classList.remove("has-lightbox");
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [item, onClose]);
+  }, [item, onClose, onNext, onPrevious]);
 
   if (!item) {
     return null;
@@ -38,7 +48,13 @@ export function GalleryLightbox({ item, onClose }: GalleryLightboxProps) {
         <button className="lightbox-close" type="button" onClick={onClose} aria-label="Cerrar">
           ×
         </button>
+        <button className="lightbox-arrow lightbox-arrow-left" type="button" onClick={onPrevious} aria-label="Imagen anterior">
+          ‹
+        </button>
         <img src={item.fullUrl} alt={item.alt} />
+        <button className="lightbox-arrow lightbox-arrow-right" type="button" onClick={onNext} aria-label="Imagen siguiente">
+          ›
+        </button>
         <figcaption>
           <span>{item.categoryLabel}</span>
           <strong>{item.title}</strong>

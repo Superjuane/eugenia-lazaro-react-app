@@ -42,7 +42,15 @@ export default defineConfig({
 
           response.statusCode = 200
           response.setHeader('Content-Type', 'application/json')
-          response.end(JSON.stringify({ ok: true, delivered: false, mode: 'local-dev' }))
+          response.end(
+            JSON.stringify({
+              ok: true,
+              delivered: false,
+              mode: 'local-dev',
+              message:
+                'Mensaje recibido en Vite local. Para enviar email real, ejecuta la función en Vercel con RESEND_API_KEY o CONTACT_WEBHOOK_URL.',
+            }),
+          )
         })
       },
     },

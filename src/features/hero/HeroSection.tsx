@@ -1,16 +1,16 @@
-import { siteConfig } from "../../content/site";
-import heroImage from "../../assets/background-clouds-1.jpg";
-import { isInternalClick, navigateTo } from "../../app/navigation";
 import type { MouseEvent } from "react";
+import { isInternalClick, navigateTo } from "../../app/navigation";
+import heroImage from "../../assets/background-clouds-1.jpg";
+import { siteConfig } from "../../content/site";
 
 export function HeroSection() {
-  function handleGalleryClick(event: MouseEvent<HTMLAnchorElement>) {
+  function handleFeaturedClick(event: MouseEvent<HTMLAnchorElement>) {
     if (!isInternalClick(event)) {
       return;
     }
 
     event.preventDefault();
-    navigateTo("/Gallery");
+    navigateTo("/#gallery");
   }
 
   return (
@@ -18,8 +18,8 @@ export function HeroSection() {
       <div className="section-container hero-content">
         <p className="eyebrow">{siteConfig.subtitle}</p>
         <h1>{siteConfig.name}</h1>
-        <a className="primary-action" href="/Gallery" onClick={handleGalleryClick}>
-          Ver galería
+        <a className="primary-action" href="/#gallery" onClick={handleFeaturedClick}>
+          Ver trabajos destacados
         </a>
       </div>
     </section>
