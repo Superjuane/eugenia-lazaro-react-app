@@ -3,7 +3,10 @@ import type { ChangeEvent, FormEvent } from "react";
 import { navigateTo } from "../../app/navigation";
 import { useAdminAuth } from "../../features/admin/AdminAuthContext";
 import { useGalleryData } from "../../features/gallery/GalleryDataContext";
-import type { GalleryItem } from "../../shared/types/gallery";
+import type { GalleryImageUpload, GalleryItem } from "../../shared/types/gallery";
+
+const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+const maxImageSide = 2200;
 
 function toList(value: string) {
   return value
@@ -12,16 +15,89 @@ function toList(value: string) {
     .filter(Boolean);
 }
 
+function readBlobAsDataUrl(blob: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => resolve(String(reader.result ?? ""));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+function loadImage(url: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("No se pudo preparar la imagen."));
+    image.src = url;
+  });
+}
+
+async function optimizeImage(file: File): Promise<GalleryImageUpload> {
+  if (!allowedImageTypes.has(file.type)) {
+    throw new Error("Formato no soportado. Usa JPG, PNG o WebP.");
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    const image = await loadImage(objectUrl);
+    const scale = Math.min(1, maxImageSide / Math.max(image.naturalWidth, image.naturalHeight));
+    const width = Math.max(1, Math.round(image.naturalWidth * scale));
+    const height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      throw new Error("No se pudo preparar la imagen.");
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    context.drawImage(image, 0, 0, width, height);
+
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.9));
+
+    if (!blob) {
+      throw new Error("No se pudo optimizar la imagen.");
+    }
+
+    return {
+      dataUrl: await readBlobAsDataUrl(blob),
+      fileName: file.name.replace(/\.[^.]+$/, ".webp"),
+      mimeType: "image/webp",
+    };
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 export function AdminPage() {
-  const { session, isLoading, login, logout } = useAdminAuth();
-  const { items, groups, addItem, updateItem, deleteItem, addGroup, updateGroup, deleteGroup, resetItems } = useGalleryData();
+  const { session, isLoading: isAuthLoading, login, logout } = useAdminAuth();
+  const {
+    items,
+    groups,
+    isLoading: isGalleryLoading,
+    error: galleryError,
+    addItem,
+    updateItem,
+    deleteItem,
+    addGroup,
+    updateGroup,
+    deleteGroup,
+    resetItems,
+  } = useGalleryData();
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [loginError, setLoginError] = useState("");
+  const [adminError, setAdminError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [newGroupLabel, setNewGroupLabel] = useState("");
   const [newItem, setNewItem] = useState({
     title: "",
     category: "sillas",
-    imageDataUrl: "",
+    image: null as GalleryImageUpload | null,
     etiquetas: "",
     colors: "",
     createdAt: "",
@@ -35,89 +111,102 @@ export function AdminPage() {
 
     if (!success) {
       setLoginError("Credenciales incorrectas o variables de entorno sin configurar.");
+      return;
     }
+
+    setLoginError("");
+    await resetItems();
   }
 
-  function handleImageUpload(event: ChangeEvent<HTMLInputElement>) {
+  async function handleImageUpload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
     if (!file) {
-      setNewItem({ ...newItem, imageDataUrl: "" });
+      setNewItem({ ...newItem, image: null });
       return;
     }
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      setNewItem((currentItem) => ({ ...currentItem, imageDataUrl: String(reader.result ?? "") }));
-    };
-
-    reader.readAsDataURL(file);
+    try {
+      setAdminError("");
+      const image = await optimizeImage(file);
+      setNewItem((currentItem) => ({ ...currentItem, image }));
+    } catch (error) {
+      setAdminError(error instanceof Error ? error.message : "No se pudo preparar la imagen.");
+    }
   }
 
-  function handleAddItem(event: FormEvent<HTMLFormElement>) {
+  async function handleAddItem(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const selectedGroup = groups.find((group) => group.id === newItem.category) ?? groups[0];
 
-    if (!newItem.imageDataUrl || !selectedGroup) {
+    if (!newItem.image || !selectedGroup) {
       return;
     }
 
-    addItem({
-      title: newItem.title,
-      category: selectedGroup.id,
-      categoryLabel: selectedGroup.label,
-      etiquetas: toList(newItem.etiquetas),
-      colors: toList(newItem.colors),
-      thumbnailUrl: newItem.imageDataUrl,
-      fullUrl: newItem.imageDataUrl,
-      alt: `${newItem.title} - ${selectedGroup.label}`,
-      featured: newItem.featured,
-      published: newItem.published,
-      createdAt: newItem.createdAt || undefined,
-    });
+    try {
+      setIsSaving(true);
+      setAdminError("");
+      await addItem({
+        title: newItem.title,
+        category: selectedGroup.id,
+        etiquetas: toList(newItem.etiquetas),
+        colors: toList(newItem.colors),
+        image: newItem.image,
+        featured: newItem.featured,
+        published: newItem.published,
+        createdAt: newItem.createdAt || undefined,
+      });
 
-    setNewItem({
-      title: "",
-      category: groups[0]?.id ?? "",
-      imageDataUrl: "",
-      etiquetas: "",
-      colors: "",
-      createdAt: "",
-      published: false,
-      featured: false,
-    });
+      setNewItem({
+        title: "",
+        category: groups[0]?.id ?? "",
+        image: null,
+        etiquetas: "",
+        colors: "",
+        createdAt: "",
+        published: false,
+        featured: false,
+      });
+    } catch (error) {
+      setAdminError(error instanceof Error ? error.message : "No se pudo guardar la imagen.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
-  function handleAddGroup(event: FormEvent<HTMLFormElement>) {
+  async function handleAddGroup(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    addGroup(newGroupLabel);
-    setNewGroupLabel("");
+    try {
+      await addGroup(newGroupLabel);
+      setNewGroupLabel("");
+    } catch (error) {
+      setAdminError(error instanceof Error ? error.message : "No se pudo guardar el grupo.");
+    }
   }
 
-  function updateItemGroup(item: GalleryItem, groupId: string) {
+  async function updateItemGroup(item: GalleryItem, groupId: string) {
     const selectedGroup = groups.find((group) => group.id === groupId);
 
     if (!selectedGroup) {
       return;
     }
 
-    updateItem(item.id, {
+    await updateItem(item.id, {
       category: selectedGroup.id,
       categoryLabel: selectedGroup.label,
       alt: `${item.title} - ${selectedGroup.label}`,
     });
   }
 
-  function updateEtiquetas(item: GalleryItem, value: string) {
-    updateItem(item.id, { etiquetas: toList(value) });
+  async function updateEtiquetas(item: GalleryItem, value: string) {
+    await updateItem(item.id, { etiquetas: toList(value) });
   }
 
-  function updateColors(item: GalleryItem, value: string) {
-    updateItem(item.id, { colors: toList(value) });
+  async function updateColors(item: GalleryItem, value: string) {
+    await updateItem(item.id, { colors: toList(value) });
   }
 
-  if (isLoading) {
+  if (isAuthLoading) {
     return <section className="admin-page admin-login-page">Cargando...</section>;
   }
 
@@ -159,8 +248,8 @@ export function AdminPage() {
           <button type="button" onClick={() => void logout()}>
             Cerrar sesion
           </button>
-          <button type="button" onClick={resetItems}>
-            Restaurar datos
+          <button type="button" onClick={() => void resetItems()}>
+            Recargar datos
           </button>
         </aside>
 
@@ -174,9 +263,9 @@ export function AdminPage() {
             <h2>Anadir imagen</h2>
             <label className="admin-upload-field">
               Imagen
-              <input type="file" accept="image/*" onChange={handleImageUpload} required={!newItem.imageDataUrl} />
+              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => void handleImageUpload(event)} required={!newItem.image} />
             </label>
-            {newItem.imageDataUrl ? <img className="admin-upload-preview" src={newItem.imageDataUrl} alt="Vista previa" /> : null}
+            {newItem.image ? <img className="admin-upload-preview" src={newItem.image.dataUrl} alt="Vista previa" /> : null}
             <input placeholder="Titulo" value={newItem.title} onChange={(event) => setNewItem({ ...newItem, title: event.target.value })} required />
             <select
               value={newItem.category}
@@ -212,9 +301,11 @@ export function AdminPage() {
               <input type="checkbox" checked={newItem.featured} onChange={(event) => setNewItem({ ...newItem, featured: event.target.checked })} />
               Destacada
             </label>
-            <button className="form-submit" type="submit">
-              Anadir
+            <button className="form-submit" type="submit" disabled={isSaving}>
+              {isSaving ? "Guardando..." : "Anadir"}
             </button>
+            {adminError || galleryError ? <p className="form-status form-status-error">{adminError || galleryError}</p> : null}
+            {isGalleryLoading ? <p className="form-status">Cargando galeria...</p> : null}
           </form>
 
           <section className="admin-panel admin-groups-panel">
@@ -226,8 +317,8 @@ export function AdminPage() {
             <div className="admin-group-list">
               {groups.map((group) => (
                 <article key={group.id} className="admin-group-row">
-                  <input value={group.label} onChange={(event) => updateGroup(group.id, event.target.value)} />
-                  <button type="button" onClick={() => deleteGroup(group.id)} disabled={groups.length <= 1}>
+                  <input defaultValue={group.label} onBlur={(event) => void updateGroup(group.id, event.target.value)} />
+                  <button type="button" onClick={() => void deleteGroup(group.id)} disabled={groups.length <= 1}>
                     Eliminar
                   </button>
                 </article>
@@ -245,7 +336,7 @@ export function AdminPage() {
                 </div>
                 <label>
                   Grupo
-                  <select value={item.category} onChange={(event) => updateItemGroup(item, event.target.value)}>
+                  <select value={item.category} onChange={(event) => void updateItemGroup(item, event.target.value)}>
                     {groups.map((group) => (
                       <option key={group.id} value={group.id}>
                         {group.label}
@@ -255,25 +346,25 @@ export function AdminPage() {
                 </label>
                 <label>
                   Etiquetas
-                  <input value={item.etiquetas.join(", ")} onChange={(event) => updateEtiquetas(item, event.target.value)} />
+                  <input defaultValue={item.etiquetas.join(", ")} onBlur={(event) => void updateEtiquetas(item, event.target.value)} />
                 </label>
                 <label>
                   Color
-                  <input value={item.colors.join(", ")} onChange={(event) => updateColors(item, event.target.value)} />
+                  <input defaultValue={item.colors.join(", ")} onBlur={(event) => void updateColors(item, event.target.value)} />
                 </label>
                 <label>
                   Fecha
-                  <input type="date" value={item.createdAt} onChange={(event) => updateItem(item.id, { createdAt: event.target.value })} />
+                  <input type="date" defaultValue={item.createdAt} onBlur={(event) => void updateItem(item.id, { createdAt: event.target.value })} />
                 </label>
                 <label className="admin-check">
-                  <input type="checkbox" checked={item.published} onChange={(event) => updateItem(item.id, { published: event.target.checked })} />
+                  <input type="checkbox" defaultChecked={item.published} onChange={(event) => void updateItem(item.id, { published: event.target.checked })} />
                   Publicada
                 </label>
                 <label className="admin-check">
-                  <input type="checkbox" checked={item.featured} onChange={(event) => updateItem(item.id, { featured: event.target.checked })} />
+                  <input type="checkbox" defaultChecked={item.featured} onChange={(event) => void updateItem(item.id, { featured: event.target.checked })} />
                   Destacada
                 </label>
-                <button type="button" onClick={() => deleteItem(item.id)}>
+                <button type="button" onClick={() => void deleteItem(item.id)}>
                   Eliminar
                 </button>
               </article>

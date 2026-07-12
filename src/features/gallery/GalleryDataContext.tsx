@@ -1,201 +1,171 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import type { GalleryGroup, GalleryItem } from "../../shared/types/gallery";
+import type { GalleryCreateInput, GalleryDataPayload, GalleryGroup, GalleryItem } from "../../shared/types/gallery";
 import { galleryGroups, galleryItems } from "./data/gallery.data";
-
-const STORAGE_KEY = "eugenia-gallery-admin-data";
-const GROUPS_STORAGE_KEY = "eugenia-gallery-groups";
-
-type NewGalleryItem = Omit<GalleryItem, "id" | "sortOrder" | "createdAt"> & {
-  createdAt?: string;
-};
 
 type GalleryDataContextValue = {
   items: GalleryItem[];
   groups: GalleryGroup[];
-  addItem: (item: NewGalleryItem) => void;
-  updateItem: (id: string, update: Partial<GalleryItem>) => void;
-  deleteItem: (id: string) => void;
-  addGroup: (label: string) => void;
-  updateGroup: (id: string, label: string) => void;
-  deleteGroup: (id: string) => void;
-  resetItems: () => void;
+  isLoading: boolean;
+  error: string;
+  addItem: (item: GalleryCreateInput) => Promise<void>;
+  updateItem: (id: string, update: Partial<GalleryItem>) => Promise<void>;
+  deleteItem: (id: string) => Promise<void>;
+  addGroup: (label: string) => Promise<void>;
+  updateGroup: (id: string, label: string) => Promise<void>;
+  deleteGroup: (id: string) => Promise<void>;
+  resetItems: () => Promise<void>;
 };
 
 const GalleryDataContext = createContext<GalleryDataContextValue | null>(null);
 
-type StoredGalleryItem = GalleryItem & {
-  tags?: string[];
-  labels?: string[];
-  color?: string | string[];
-};
-
-function toUniqueList(values: Array<string | undefined>) {
-  return Array.from(new Set(values.map((value) => value?.trim()).filter(Boolean) as string[]));
-}
-
-function slugify(value: string) {
-  return (
-    value
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "") || "grupo"
-  );
-}
-
 function normalizeGroups(groups: GalleryGroup[]) {
   return groups
     .map((group) => ({
-      id: group.id || slugify(group.label),
+      id: group.id,
       label: group.label.trim(),
     }))
-    .filter((group) => group.label);
+    .filter((group) => group.id && group.label);
 }
 
-function normalizeItems(items: StoredGalleryItem[]) {
-  return items.map((item) => {
-    const { tags, labels, color, ...baseItem } = item;
-    const legacyColor = Array.isArray(color) ? color : color ? [color] : [];
-
-    return {
-      ...baseItem,
-      etiquetas: item.etiquetas?.length ? item.etiquetas : toUniqueList([...(tags ?? []), ...(labels ?? [])]),
-      colors: item.colors?.length ? item.colors : toUniqueList(legacyColor),
-      createdAt: item.createdAt ?? new Date().toISOString().slice(0, 10),
-    };
-  });
+function fallbackPayload(): GalleryDataPayload {
+  return {
+    items: galleryItems,
+    groups: normalizeGroups(galleryGroups),
+  };
 }
 
-function loadInitialItems() {
-  const storedItems = window.localStorage.getItem(STORAGE_KEY);
+async function readJson<T>(response: Response) {
+  const payload = (await response.json().catch(() => ({}))) as T & { error?: string };
 
-  if (!storedItems) {
-    return normalizeItems(galleryItems);
+  if (!response.ok) {
+    throw new Error(payload.error || "Gallery request failed");
   }
 
-  try {
-    return normalizeItems(JSON.parse(storedItems) as StoredGalleryItem[]);
-  } catch {
-    return normalizeItems(galleryItems);
-  }
-}
-
-function loadInitialGroups() {
-  const storedGroups = window.localStorage.getItem(GROUPS_STORAGE_KEY);
-
-  if (!storedGroups) {
-    return normalizeGroups(galleryGroups);
-  }
-
-  try {
-    return normalizeGroups(JSON.parse(storedGroups) as GalleryGroup[]);
-  } catch {
-    return normalizeGroups(galleryGroups);
-  }
+  return payload as T;
 }
 
 export function GalleryDataProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<GalleryItem[]>(loadInitialItems);
-  const [groups, setGroups] = useState<GalleryGroup[]>(loadInitialGroups);
+  const fallback = fallbackPayload();
+  const [items, setItems] = useState<GalleryItem[]>(fallback.items);
+  const [groups, setGroups] = useState<GalleryGroup[]>(fallback.groups);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+  async function loadGallery() {
+    setIsLoading(true);
 
-  useEffect(() => {
-    window.localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
-  }, [groups]);
-
-  function addItem(item: NewGalleryItem) {
-    setItems((currentItems) => {
-      const nextSortOrder = currentItems.reduce((max, current) => Math.max(max, current.sortOrder), 0) + 1;
-      const id = `admin-${Date.now()}`;
-
-      return [
-        {
-          ...item,
-          id,
-          createdAt: item.createdAt ?? new Date().toISOString().slice(0, 10),
-          sortOrder: nextSortOrder,
-        },
-        ...currentItems,
-      ];
-    });
-  }
-
-  function updateItem(id: string, update: Partial<GalleryItem>) {
-    setItems((currentItems) => currentItems.map((item) => (item.id === id ? { ...item, ...update } : item)));
-  }
-
-  function deleteItem(id: string) {
-    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
-  }
-
-  function addGroup(label: string) {
-    const cleanLabel = label.trim();
-
-    if (!cleanLabel) {
-      return;
-    }
-
-    setGroups((currentGroups) => {
-      const baseId = slugify(cleanLabel);
-      let id = baseId;
-      let suffix = 2;
-
-      while (currentGroups.some((group) => group.id === id)) {
-        id = `${baseId}-${suffix}`;
-        suffix += 1;
-      }
-
-      return [...currentGroups, { id, label: cleanLabel }];
-    });
-  }
-
-  function updateGroup(id: string, label: string) {
-    const cleanLabel = label.trim();
-
-    if (!cleanLabel) {
-      return;
-    }
-
-    setGroups((currentGroups) => currentGroups.map((group) => (group.id === id ? { ...group, label: cleanLabel } : group)));
-    setItems((currentItems) =>
-      currentItems.map((item) => (item.category === id ? { ...item, categoryLabel: cleanLabel, alt: `${item.title} - ${cleanLabel}` } : item)),
-    );
-  }
-
-  function deleteGroup(id: string) {
-    setGroups((currentGroups) => {
-      if (currentGroups.length <= 1) {
-        return currentGroups;
-      }
-
-      const nextGroups = currentGroups.filter((group) => group.id !== id);
-      const fallbackGroup = nextGroups[0];
-
-      setItems((currentItems) =>
-        currentItems.map((item) =>
-          item.category === id
-            ? { ...item, category: fallbackGroup.id, categoryLabel: fallbackGroup.label, alt: `${item.title} - ${fallbackGroup.label}` }
-            : item,
-        ),
+    try {
+      const payload = await readJson<GalleryDataPayload>(
+        await fetch("/api/gallery?scope=admin", {
+          credentials: "include",
+        }),
       );
 
-      return nextGroups;
-    });
+      setItems(payload.items);
+      setGroups(payload.groups);
+      setError("");
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "No se pudo cargar la galeria desde Supabase.");
+      setItems(fallback.items);
+      setGroups(fallback.groups);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
-  function resetItems() {
-    setItems(normalizeItems(galleryItems));
-    setGroups(normalizeGroups(galleryGroups));
+  useEffect(() => {
+    void loadGallery();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function addItem(item: GalleryCreateInput) {
+    const createdItem = await readJson<GalleryItem>(
+      await fetch("/api/gallery", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item),
+      }),
+    );
+
+    setItems((currentItems) => [createdItem, ...currentItems]);
+    setError("");
+  }
+
+  async function updateItem(id: string, update: Partial<GalleryItem>) {
+    const updatedItem = await readJson<GalleryItem>(
+      await fetch(`/api/gallery/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(update),
+      }),
+    );
+
+    setItems((currentItems) => currentItems.map((item) => (item.id === id ? updatedItem : item)));
+    setError("");
+  }
+
+  async function deleteItem(id: string) {
+    await readJson<{ ok: true }>(
+      await fetch(`/api/gallery/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        credentials: "include",
+      }),
+    );
+
+    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+    setError("");
+  }
+
+  async function addGroup(label: string) {
+    const group = await readJson<GalleryGroup>(
+      await fetch("/api/gallery/groups", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ label }),
+      }),
+    );
+
+    setGroups((currentGroups) => [...currentGroups, group]);
+    setError("");
+  }
+
+  async function updateGroup(id: string, label: string) {
+    const group = await readJson<GalleryGroup>(
+      await fetch(`/api/gallery/groups/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ label }),
+      }),
+    );
+
+    setGroups((currentGroups) => currentGroups.map((currentGroup) => (currentGroup.id === id ? group : currentGroup)));
+    setItems((currentItems) =>
+      currentItems.map((item) => (item.category === id ? { ...item, categoryLabel: group.label, alt: `${item.title} - ${group.label}` } : item)),
+    );
+    setError("");
+  }
+
+  async function deleteGroup(id: string) {
+    await readJson<{ ok: true }>(
+      await fetch(`/api/gallery/groups/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        credentials: "include",
+      }),
+    );
+
+    await loadGallery();
   }
 
   return (
-    <GalleryDataContext.Provider value={{ items, groups, addItem, updateItem, deleteItem, addGroup, updateGroup, deleteGroup, resetItems }}>
+    <GalleryDataContext.Provider
+      value={{ items, groups, isLoading, error, addItem, updateItem, deleteItem, addGroup, updateGroup, deleteGroup, resetItems: loadGallery }}
+    >
       {children}
     </GalleryDataContext.Provider>
   );

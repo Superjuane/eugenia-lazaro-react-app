@@ -18,3 +18,25 @@ export type GalleryItem = {
   createdAt: string;
   sortOrder: number;
 };
+
+export type GalleryImageUpload = {
+  dataUrl: string;
+  fileName: string;
+  mimeType: string;
+};
+
+export type GalleryCreateInput = {
+  title: string;
+  category: string;
+  etiquetas: string[];
+  colors: string[];
+  image: GalleryImageUpload;
+  featured: boolean;
+  published: boolean;
+  createdAt?: string;
+};
+
+export type GalleryDataPayload = {
+  items: GalleryItem[];
+  groups: GalleryGroup[];
+};
