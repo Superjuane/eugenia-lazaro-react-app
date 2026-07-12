@@ -1,4 +1,4 @@
-import { getAdminSession } from "../_adminAuth";
+import { getAdminSession } from "../_adminAuth.js";
 
 type VercelRequest = {
   method?: string;

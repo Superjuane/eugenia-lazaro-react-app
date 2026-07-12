@@ -1,4 +1,4 @@
-import { createAdminToken, setAdminCookie } from "../_adminAuth";
+import { createAdminToken, setAdminCookie } from "../_adminAuth.js";
 
 type AdminLoginRequest = {
   username?: string;
