@@ -1,11 +1,13 @@
 import type { MouseEvent } from "react";
 import { isInternalClick, navigateTo } from "../../app/navigation";
 import { SectionHeader } from "../../shared/ui/SectionHeader";
+import { useGalleryData } from "./GalleryDataContext";
 import { GalleryGrid } from "./GalleryGrid";
 import { getFeaturedGalleryItems } from "./gallery.utils";
 
 export function GalleryPreviewSection() {
-  const featuredItems = getFeaturedGalleryItems();
+  const { items } = useGalleryData();
+  const featuredItems = getFeaturedGalleryItems(items);
 
   function handleGalleryClick(event: MouseEvent<HTMLAnchorElement>) {
     if (!isInternalClick(event)) {

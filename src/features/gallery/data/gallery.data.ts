@@ -6,6 +6,12 @@ export const galleryItems: GalleryItem[] = [
     "title": "Pack conejito Coral",
     "category": "packs",
     "categoryLabel": "Packs",
+    "etiquetas": [
+      "Packs",
+      "Conejito",
+      "Coral"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/pack-4.1-big.jpeg",
     "fullUrl": "/images/gallery/pack-4.1-big.jpeg",
     "alt": "Pack conejito Coral - Packs",
@@ -19,6 +25,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cartel elefantito",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Elefantito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-12-big.jpeg",
     "fullUrl": "/images/gallery/cartel-12-big.jpeg",
     "alt": "Cartel elefantito - Cartel",
@@ -32,6 +43,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Leoncito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Leoncito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-30-big.jpeg",
     "fullUrl": "/images/gallery/silla-30-big.jpeg",
     "alt": "Leoncito - Sillas",
@@ -45,6 +61,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cartel L A",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-14-big.jpeg",
     "fullUrl": "/images/gallery/cartel-14-big.jpeg",
     "alt": "Cartel L A - Cartel",
@@ -58,6 +78,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Pack conejito",
     "category": "packs",
     "categoryLabel": "Packs",
+    "etiquetas": [
+      "Packs",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/pack-1-big.jpeg",
     "fullUrl": "/images/gallery/pack-1-big.jpeg",
     "alt": "Pack conejito - Packs",
@@ -71,6 +96,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-35.1-big.jpeg",
     "fullUrl": "/images/gallery/silla-35.1-big.jpeg",
     "alt": "Conejito - Sillas",
@@ -84,6 +114,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Estrellitas",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Estrellitas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-32-big.jpeg",
     "fullUrl": "/images/gallery/silla-32-big.jpeg",
     "alt": "Estrellitas - Sillas",
@@ -97,6 +132,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Jirafita",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Jirafita"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-33.1-big.jpeg",
     "fullUrl": "/images/gallery/silla-33.1-big.jpeg",
     "alt": "Jirafita - Sillas",
@@ -110,6 +150,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cartel jirafita",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Jirafita"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-13-big.jpeg",
     "fullUrl": "/images/gallery/cartel-13-big.jpeg",
     "alt": "Cartel jirafita - Cartel",
@@ -123,6 +168,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Elefantito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Elefantito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-34-big.jpeg",
     "fullUrl": "/images/gallery/silla-34-big.jpeg",
     "alt": "Elefantito - Sillas",
@@ -136,6 +186,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-31-big.jpeg",
     "fullUrl": "/images/gallery/silla-31-big.jpeg",
     "alt": "Conejito - Sillas",
@@ -149,6 +204,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-36-big.jpeg",
     "fullUrl": "/images/gallery/silla-36-big.jpeg",
     "alt": "Conejito - Sillas",
@@ -162,6 +222,13 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cartel conejito Coral",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Conejito",
+      "Coral",
+      "Conejit"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-15-big.jpeg",
     "fullUrl": "/images/gallery/cartel-15-big.jpeg",
     "alt": "Cartel conejit Coral - Cartel",
@@ -175,6 +242,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Pack jirafa",
     "category": "packs",
     "categoryLabel": "Packs",
+    "etiquetas": [
+      "Packs",
+      "Jirafa"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/pack-2.2-big.jpeg",
     "fullUrl": "/images/gallery/pack-2.2-big.jpeg",
     "alt": "Pack jirafa - Packs",
@@ -188,6 +260,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Pack leoncito",
     "category": "packs",
     "categoryLabel": "Packs",
+    "etiquetas": [
+      "Packs",
+      "Leoncito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/pack-3-big.jpeg",
     "fullUrl": "/images/gallery/pack-3-big.jpeg",
     "alt": "Pack leoncito - Packs",
@@ -201,6 +278,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-25-big.jpg",
     "fullUrl": "/images/gallery/silla-25-big.jpg",
     "alt": "Silla conejito - Sillas",
@@ -214,6 +296,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-26-big.jpg",
     "fullUrl": "/images/gallery/silla-26-big.jpg",
     "alt": "Silla conejito - Sillas",
@@ -227,6 +314,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Mesa y silla de zorro",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Zorro"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/sillaMesa-8-big.jpg",
     "fullUrl": "/images/gallery/sillaMesa-8-big.jpg",
     "alt": "Mesa y silla de zorro - Mesa y silla",
@@ -240,6 +332,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Mesa y silla de elefante",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Elefante"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/sillaMesa-7-big.jpg",
     "fullUrl": "/images/gallery/sillaMesa-7-big.jpg",
     "alt": "Mesa y silla de elefante - Mesa y sillas",
@@ -253,6 +350,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Mesa y silla de conejo",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Conejo"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/sillaMesa-9-big.jpg",
     "fullUrl": "/images/gallery/sillaMesa-9-big.jpg",
     "alt": "Mesa y silla de conejo - Mesa y sillas",
@@ -266,6 +368,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla nene",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-27.jpeg",
     "fullUrl": "/images/gallery/silla-27.jpeg",
     "alt": "Silla nene - Sillas",
@@ -279,6 +385,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla nene",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-28.jpeg",
     "fullUrl": "/images/gallery/silla-28.jpeg",
     "alt": "Silla nene - Sillas",
@@ -292,6 +402,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla nene",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-29.jpeg",
     "fullUrl": "/images/gallery/silla-29.jpeg",
     "alt": "Silla nene - Sillas",
@@ -305,6 +419,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cartel conejito",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-4.jpeg",
     "fullUrl": "/images/gallery/cartel-4.jpeg",
     "alt": "Cartel conejito - Cartel",
@@ -318,6 +437,12 @@ export const galleryItems: GalleryItem[] = [
     "title": "Bones Festes",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Bones",
+      "Festes"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-1-big.png",
     "fullUrl": "/images/gallery/cartel-1-big.png",
     "alt": "Bones Festes - Cartel",
@@ -331,6 +456,12 @@ export const galleryItems: GalleryItem[] = [
     "title": "Aviador de papel",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Aviador",
+      "Papel"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-5-big.jpeg",
     "fullUrl": "/images/gallery/silla-5-big.jpeg",
     "alt": "Aviador de papel - Sillas",
@@ -344,6 +475,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Mesa-Pizarra",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Pizarra"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/mesaSilla-2-big.png",
     "fullUrl": "/images/gallery/mesaSilla-2-big.png",
     "alt": "Mesa-Pizarra - Mesa y sillas",
@@ -357,6 +493,15 @@ export const galleryItems: GalleryItem[] = [
     "title": "Mesa y sillas Conejos de trapo marrones",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Conejos",
+      "Trapo",
+      "Marrones"
+    ],
+    "colors": [
+      "Marron"
+    ],
     "thumbnailUrl": "/images/gallery/mesaSilla-1-big.jpg",
     "fullUrl": "/images/gallery/mesaSilla-1-big.jpg",
     "alt": "Conejos de trapo - Mesa y sillas",
@@ -370,6 +515,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Benvinguts a casa",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Benvinguts"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-2-big.jpg",
     "fullUrl": "/images/gallery/cartel-2-big.jpg",
     "alt": "Benvinguts a casa - Cartel",
@@ -383,6 +533,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Hadita",
     "category": "bandejas",
     "categoryLabel": "Bandejas",
+    "etiquetas": [
+      "Bandejas",
+      "Hadita"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/bandeja-2-big.jpeg",
     "fullUrl": "/images/gallery/bandeja-2-big.jpeg",
     "alt": "Hadita - Bandejas",
@@ -396,6 +551,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Bandejas de navidad",
     "category": "bandejas",
     "categoryLabel": "Bandejas",
+    "etiquetas": [
+      "Bandejas",
+      "Navidad"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/bandeja-1-big.png",
     "fullUrl": "/images/gallery/bandeja-1-big.png",
     "alt": "Bandejas de Navidad - Bandejas",
@@ -409,6 +569,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla Rat�n",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-1-big.jpg",
     "fullUrl": "/images/gallery/silla-1-big.jpg",
     "alt": "Silla Rat�n - Silla",
@@ -422,6 +586,15 @@ export const galleryItems: GalleryItem[] = [
     "title": "Mesa y sillas Conejo blanco con coraz�n",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Conejo",
+      "Blanco",
+      "Coraz"
+    ],
+    "colors": [
+      "Blanco"
+    ],
     "thumbnailUrl": "/images/gallery/mesaSilla-3-big.jpg",
     "fullUrl": "/images/gallery/mesaSilla-3-big.jpg",
     "alt": "Conejo blanco con coraz�n - Mesa y Sillas",
@@ -435,6 +608,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Pizarra para ni�os",
     "category": "otros",
     "categoryLabel": "Otros",
+    "etiquetas": [
+      "Otros",
+      "Pizarra"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/pizarra-1-big.jpeg",
     "fullUrl": "/images/gallery/pizarra-1-big.jpeg",
     "alt": "Pizarra para ni�os - Otro",
@@ -448,6 +626,12 @@ export const galleryItems: GalleryItem[] = [
     "title": "Aviador de papel",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Aviador",
+      "Papel"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-5-big.jpeg",
     "fullUrl": "/images/gallery/silla-5-big.jpeg",
     "alt": "Aviador de papel - Sillas",
@@ -461,6 +645,12 @@ export const galleryItems: GalleryItem[] = [
     "title": "Ba�l de madera artesanal",
     "category": "otros",
     "categoryLabel": "Otros",
+    "etiquetas": [
+      "Otros",
+      "Madera",
+      "Artesanal"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/baul-1.2-big.jpeg",
     "fullUrl": "/images/gallery/baul-1.2-big.jpeg",
     "alt": "Ba�l de madera artesanal - Otro",
@@ -474,6 +664,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla jirafa",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Jirafa"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-19-big.jpeg",
     "fullUrl": "/images/gallery/silla-19-big.jpeg",
     "alt": "Silla jirafa - Sillas",
@@ -487,6 +682,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Sillas conejitos",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejitos"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-20-big.jpeg",
     "fullUrl": "/images/gallery/silla-20-big.jpeg",
     "alt": "Sillas conejitos - Sillas",
@@ -500,6 +700,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Caja Buh�tos de Navidad",
     "category": "cajas",
     "categoryLabel": "Cajas",
+    "etiquetas": [
+      "Cajas",
+      "Navidad"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/caja-2-big.jpeg",
     "fullUrl": "/images/gallery/caja-2-big.jpeg",
     "alt": "Caja Buh�tos de Navidad - Cajas",
@@ -513,6 +718,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Conejitos",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejitos"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-7-big.jpeg",
     "fullUrl": "/images/gallery/silla-7-big.jpeg",
     "alt": "Conejitos - Sillas",
@@ -526,6 +736,12 @@ export const galleryItems: GalleryItem[] = [
     "title": "Conejito con coraz�n",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito",
+      "Coraz"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-9-big.jpeg",
     "fullUrl": "/images/gallery/silla-9-big.jpeg",
     "alt": "Conejito con coraz�n - Sillas",
@@ -539,6 +755,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cajas de buh�tos",
     "category": "cajas",
     "categoryLabel": "Cajas",
+    "etiquetas": [
+      "Cajas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/caja-3-big.jpeg",
     "fullUrl": "/images/gallery/caja-3-big.jpeg",
     "alt": "Cajas de buh�tos - Cajas",
@@ -552,6 +772,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-21-big.jpeg",
     "fullUrl": "/images/gallery/silla-21-big.jpeg",
     "alt": "Silla conejito - Sillas",
@@ -565,6 +790,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla conejito - Sillas",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-22-big.jpeg",
     "fullUrl": "/images/gallery/silla-22-big.jpeg",
     "alt": "Silla conejito - Sillas",
@@ -578,6 +808,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cartel ni�a y ni�o con globos",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Globos"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-5.3-big.jpeg",
     "fullUrl": "/images/gallery/cartel-5.3-big.jpeg",
     "alt": "Cartel ni�a y ni�o con globos - Cartel",
@@ -591,6 +826,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-23-big.jpeg",
     "fullUrl": "/images/gallery/silla-23-big.jpeg",
     "alt": "Silla conejito - Sillas",
@@ -604,6 +844,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla conejito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Conejito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-24-big.jpeg",
     "fullUrl": "/images/gallery/silla-24-big.jpeg",
     "alt": "Silla conejito - Sillas",
@@ -617,6 +862,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla y mesa de animalitos",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Animalitos"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/sillaMesa-4-small.jpeg",
     "fullUrl": "/images/gallery/sillaMesa-4-small.jpeg",
     "alt": "Silla y mesa de animalitos - Sillas",
@@ -630,6 +880,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Casitas de p�jaro",
     "category": "otros",
     "categoryLabel": "Otros",
+    "etiquetas": [
+      "Otros",
+      "Casitas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/casaPajaro-1-big.jpeg",
     "fullUrl": "/images/gallery/casaPajaro-1-big.jpeg",
     "alt": "Casitas de p�jaro - Otros",
@@ -643,6 +898,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "Buh�to",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-8-big.jpeg",
     "fullUrl": "/images/gallery/silla-8-big.jpeg",
     "alt": "Buh�to - Sillas",
@@ -656,6 +915,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Ratoncito",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas",
+      "Ratoncito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-11-big.jpeg",
     "fullUrl": "/images/gallery/silla-11-big.jpeg",
     "alt": "Ratoncito - Sillas",
@@ -669,6 +933,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Cartel ratoncito",
     "category": "carteles",
     "categoryLabel": "Carteles",
+    "etiquetas": [
+      "Carteles",
+      "Ratoncito"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/cartel-11-big.jpeg",
     "fullUrl": "/images/gallery/cartel-11-big.jpeg",
     "alt": "Cartel ratoncito - Cartel",
@@ -682,6 +951,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla y mesa  ratoncitos",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Ratoncitos"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/sillaMesa-5-big.jpeg",
     "fullUrl": "/images/gallery/sillaMesa-5-big.jpeg",
     "alt": "Silla y mesa  ratoncitos - Mesa y sillas",
@@ -695,6 +969,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Silla y mesa conejitos",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Conejitos"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/sillaMesa-6-big.jpeg",
     "fullUrl": "/images/gallery/sillaMesa-6-big.jpeg",
     "alt": "Silla y mesa conejitos - Mesa y sillas",
@@ -708,6 +987,10 @@ export const galleryItems: GalleryItem[] = [
     "title": "�lex el le�n",
     "category": "sillas",
     "categoryLabel": "Sillas",
+    "etiquetas": [
+      "Sillas"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/silla-14-big.jpeg",
     "fullUrl": "/images/gallery/silla-14-big.jpeg",
     "alt": "�lex el le�n - Sillas",
@@ -721,6 +1004,11 @@ export const galleryItems: GalleryItem[] = [
     "title": "Mesa-pizarra con silla",
     "category": "mesas-sillas",
     "categoryLabel": "Mesas con sillas",
+    "etiquetas": [
+      "Mesas con sillas",
+      "Pizarra"
+    ],
+    "colors": [],
     "thumbnailUrl": "/images/gallery/sillaMesa-2.2-big.jpeg",
     "fullUrl": "/images/gallery/sillaMesa-2.2-big.jpeg",
     "alt": "Mesa-pizarra con silla - Mesa y silla",
@@ -731,12 +1019,12 @@ export const galleryItems: GalleryItem[] = [
   }
 ];
 
-export const galleryCategoryLabels: Record<GalleryItem["category"], string> = {
-  packs: "Packs",
-  carteles: "Carteles",
-  "mesas-sillas": "Mesas con sillas",
-  sillas: "Sillas",
-  cajas: "Cajas",
-  bandejas: "Bandejas",
-  otros: "Otros",
-};
+export const galleryGroups = [
+  { id: "packs", label: "Packs" },
+  { id: "carteles", label: "Carteles" },
+  { id: "mesas-sillas", label: "Mesas con sillas" },
+  { id: "sillas", label: "Sillas" },
+  { id: "cajas", label: "Cajas" },
+  { id: "bandejas", label: "Bandejas" },
+  { id: "otros", label: "Otros" },
+];

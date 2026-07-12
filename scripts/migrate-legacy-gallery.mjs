@@ -49,6 +49,45 @@ function decodeLegacyText(value) {
   return Buffer.from(value, "latin1").toString("utf8");
 }
 
+function titleCase(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
+function buildEtiquetas(item, categoryLabel) {
+  const words = decodeLegacyText(`${item.overlayTitle} ${item.overlayLinkTitle ?? ""}`)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean)
+    .filter((word) => word.length > 4)
+    .filter((word) => !["silla", "sillas", "cartel", "mesa", "mesas", "pack", "packs"].includes(word));
+
+  return Array.from(new Set([categoryLabel, ...words.map(titleCase)]));
+}
+
+function inferColorsFromText(item) {
+  const text = decodeLegacyText(`${item.overlayTitle} ${item.overlayLinkTitle ?? ""}`)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+  const colorMap = [
+    ["azul", "Azul"],
+    ["blanco", "Blanco"],
+    ["blanca", "Blanco"],
+    ["rosa", "Rosa"],
+    ["verde", "Verde"],
+    ["amarillo", "Amarillo"],
+    ["rojo", "Rojo"],
+    ["negro", "Negro"],
+    ["gris", "Gris"],
+    ["marron", "Marron"],
+    ["dorado", "Dorado"],
+  ];
+
+  return Array.from(new Set(colorMap.filter(([needle]) => text.includes(needle)).map(([, label]) => label)));
+}
+
 function readLegacyItems() {
   const source = fs.readFileSync(legacyGalleryFile, "utf8");
   const start = source.indexOf("const data = [");
@@ -100,6 +139,8 @@ const galleryItems = readLegacyItems()
       title: decodeLegacyText(item.overlayTitle).replace(/^>/, ""),
       category: category[0],
       categoryLabel: category[1],
+      etiquetas: buildEtiquetas(item, category[1]),
+      colors: inferColorsFromText(item),
       thumbnailUrl: `/images/gallery/${destinationName(safeFullPath)}`,
       fullUrl: `/images/gallery/${destinationName(safeFullPath)}`,
       alt: decodeLegacyText(item.overlayLinkTitle || item.overlayTitle),
@@ -122,15 +163,15 @@ const output = `import type { GalleryItem } from "../../../shared/types/gallery"
 
 export const galleryItems: GalleryItem[] = ${JSON.stringify(galleryItems, null, 2)};
 
-export const galleryCategoryLabels: Record<GalleryItem["category"], string> = {
-  packs: "Packs",
-  carteles: "Carteles",
-  "mesas-sillas": "Mesas con sillas",
-  sillas: "Sillas",
-  cajas: "Cajas",
-  bandejas: "Bandejas",
-  otros: "Otros",
-};
+export const galleryGroups = [
+  { id: "packs", label: "Packs" },
+  { id: "carteles", label: "Carteles" },
+  { id: "mesas-sillas", label: "Mesas con sillas" },
+  { id: "sillas", label: "Sillas" },
+  { id: "cajas", label: "Cajas" },
+  { id: "bandejas", label: "Bandejas" },
+  { id: "otros", label: "Otros" },
+];
 `;
 
 fs.writeFileSync(galleryDataFile, output, "utf8");

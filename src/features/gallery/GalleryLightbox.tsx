@@ -58,6 +58,8 @@ export function GalleryLightbox({ item, onClose, onNext, onPrevious }: GalleryLi
         <figcaption>
           <span>{item.categoryLabel}</span>
           <strong>{item.title}</strong>
+          {item.etiquetas.length ? <small>{item.etiquetas.join(", ")}</small> : null}
+          {item.colors.length ? <small>{item.colors.join(", ")}</small> : null}
         </figcaption>
       </figure>
     </div>

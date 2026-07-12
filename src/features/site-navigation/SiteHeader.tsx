@@ -3,18 +3,21 @@ import type { MouseEvent } from "react";
 import { isInternalClick, navigateTo } from "../../app/navigation";
 import sunLogo from "../../assets/sol-2.png";
 import { mainNavigation, siteConfig } from "../../content/site";
+import { useAdminAuth } from "../admin/AdminAuthContext";
 
 export function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSolid, setIsSolid] = useState(() => window.location.pathname.toLowerCase() === "/gallery");
+  const { session, logout } = useAdminAuth();
 
   useEffect(() => {
     const updateHeaderState = () => {
-      const isGalleryPage = window.location.pathname.toLowerCase() === "/gallery";
+      const currentPath = window.location.pathname.toLowerCase();
+      const isSolidPage = ["/gallery", "/admin", "/politica-privacidad", "/cookies", "/navidad", "/proceso"].includes(currentPath);
       const hero = document.querySelector<HTMLElement>(".hero-section");
       const heroBottom = hero ? hero.offsetTop + hero.offsetHeight - 72 : 0;
 
-      setIsSolid(isGalleryPage || window.scrollY >= heroBottom);
+      setIsSolid(isSolidPage || window.scrollY >= heroBottom);
     };
 
     updateHeaderState();
@@ -58,12 +61,22 @@ export function SiteHeader() {
         <span />
       </button>
 
-      <nav className={isOpen ? "site-nav is-open" : "site-nav"} aria-label="Navegación principal">
+      <nav className={isOpen ? "site-nav is-open" : "site-nav"} aria-label="Navegacion principal">
         {mainNavigation.map((item) => (
           <a key={item.href} href={item.href} onClick={(event) => handleLinkClick(event, item.href)}>
             {item.label}
           </a>
         ))}
+        {session.authenticated ? (
+          <>
+            <a className="admin-topbar-link" href="/admin" onClick={(event) => handleLinkClick(event, "/admin")} aria-label="Abrir admin">
+              Admin
+            </a>
+            <button className="admin-logout-button" type="button" onClick={() => void logout()} aria-label="Cerrar sesion">
+              Salir
+            </button>
+          </>
+        ) : null}
       </nav>
     </header>
   );
