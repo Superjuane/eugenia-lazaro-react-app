@@ -1,5 +1,5 @@
-import { getAdminSession } from "../_adminAuth";
-import { deleteGalleryItem, updateGalleryItem } from "../_supabaseGallery";
+import { getAdminSession } from "../_adminAuth.js";
+import { deleteGalleryItem, updateGalleryItem } from "../_supabaseGallery.js";
 
 type VercelRequest = {
   method?: string;

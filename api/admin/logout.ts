@@ -1,4 +1,4 @@
-import { clearAdminCookie } from "../_adminAuth";
+import { clearAdminCookie } from "../_adminAuth.js";
 
 type VercelRequest = {
   method?: string;
