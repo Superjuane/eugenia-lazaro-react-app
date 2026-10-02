@@ -63,7 +63,7 @@ export function SiteHeader() {
 
       <nav className={isOpen ? "site-nav is-open" : "site-nav"} aria-label="Navegacion principal">
         {mainNavigation.map((item) => (
-          <a key={item.href} href={item.href} onClick={(event) => handleLinkClick(event, item.href)}>
+          <a key={item.label} href={item.href} onClick={(event) => handleLinkClick(event, item.href)}>
             {item.label}
           </a>
         ))}

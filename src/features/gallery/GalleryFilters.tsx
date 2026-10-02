@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { GalleryGroup } from "../../shared/types/gallery";
 import type { GalleryFilter, GallerySort } from "./gallery.utils";
 
@@ -78,36 +78,56 @@ export function GalleryFilters({
   onColorsChange,
   onSortChange,
 }: GalleryFiltersProps) {
+  const [showExtraFilters, setShowExtraFilters] = useState(false);
+  const extraFiltersId = useId();
+  const selectedCount = selectedEtiquetas.length + selectedColors.length;
+
   return (
     <div className="gallery-control-panel" aria-label="Filtros de galeria">
-      <div className="gallery-filters">
-        <button className={activeFilter === "all" ? "is-active" : ""} type="button" onClick={() => onCategoryChange("all")}>
-          Todos
-        </button>
-        {categories.map((category) => (
-          <button
-            className={activeFilter === category.id ? "is-active" : ""}
-            key={category.id}
-            type="button"
-            onClick={() => onCategoryChange(category.id)}
-          >
-            {category.label}
+      <div className="gallery-primary-controls">
+        <div className="gallery-filters">
+          <button className={activeFilter === "all" ? "is-active" : ""} type="button" aria-pressed={activeFilter === "all"} onClick={() => onCategoryChange("all")}>
+            Todos
           </button>
-        ))}
-      </div>
+          {categories.map((category) => (
+            <button
+              className={activeFilter === category.id ? "is-active" : ""}
+              key={category.id}
+              type="button"
+              aria-pressed={activeFilter === category.id}
+              onClick={() => onCategoryChange(category.id)}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
 
-      <div className="gallery-select-row">
-        <MultiPicklist label="Etiquetas" options={etiquetas} selected={selectedEtiquetas} onChange={onEtiquetasChange} />
-        <MultiPicklist label="Color" options={colors} selected={selectedColors} onChange={onColorsChange} />
-        <label>
+        <label className="gallery-sort">
           Orden
           <select value={sort} onChange={(event) => onSortChange(event.target.value as GallerySort)}>
-            <option value="newest">Mas recientes</option>
-            <option value="oldest">Mas antiguas</option>
+            <option value="newest">Más recientes</option>
+            <option value="oldest">Más antiguas</option>
             <option value="featured">Destacadas primero</option>
             <option value="manual">Orden manual</option>
           </select>
         </label>
+      </div>
+
+      <div className="gallery-filter-toggle-row">
+        <button
+          className="gallery-filter-toggle"
+          type="button"
+          aria-expanded={showExtraFilters}
+          aria-controls={extraFiltersId}
+          onClick={() => setShowExtraFilters((shown) => !shown)}
+        >
+          {showExtraFilters ? "Ocultar" : "Mostrar"} filtros de etiquetas y colores
+          {selectedCount > 0 ? ` (${selectedCount} activos)` : ""}
+        </button>
+      </div>
+      <div className="gallery-extra-filters" id={extraFiltersId} hidden={!showExtraFilters}>
+        <MultiPicklist label="Etiquetas" options={etiquetas} selected={selectedEtiquetas} onChange={onEtiquetasChange} />
+        <MultiPicklist label="Colores" options={colors} selected={selectedColors} onChange={onColorsChange} />
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import { contactInfo } from "../../content/site";
 import { SectionHeader } from "../../shared/ui/SectionHeader";
-import { ContactForm } from "./ContactForm";
 
 export function ContactSection() {
   return (
@@ -9,19 +8,19 @@ export function ContactSection() {
         <SectionHeader
           eyebrow="Contacto"
           title="Escríbenos"
-          description="El email es el canal principal de contacto. El destino real queda configurable para el futuro panel."
+          description="Cuéntanos tu idea por WhatsApp y te ayudaremos a preparar una pieza personalizada."
         />
 
         <div className="contact-layout">
           <div className="contact-card">
-            <span className="contact-label">Email</span>
-            <a href={`mailto:${contactInfo.receiverEmail}`}>{contactInfo.publicEmailLabel}</a>
             <span className="contact-label">WhatsApp</span>
-            <a href={`tel:${contactInfo.phoneHref}`}>{contactInfo.phoneLabel}</a>
+            <a className="contact-whatsapp" href={contactInfo.whatsappUrl} target="_blank" rel="noopener noreferrer">
+              <span>Escribir por WhatsApp</span>
+              <small>{contactInfo.phoneLabel}</small>
+            </a>
             <span className="contact-label">Ubicación</span>
             <span>{contactInfo.location}</span>
           </div>
-          <ContactForm />
         </div>
       </div>
     </section>
