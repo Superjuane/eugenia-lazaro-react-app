@@ -364,9 +364,13 @@ export async function deleteGalleryGroup(id: string) {
     throw new Error("At least one group is required.");
   }
 
-  await supabaseRestFetch<null>(`/gallery_items?group_id=eq.${encodeURIComponent(id)}`, {
-    method: "PATCH",
-    body: JSON.stringify({ group_id: fallbackGroup.id }),
-  });
+  const items = await supabaseRestFetch<Array<{ id: string }>>(
+    `/gallery_items?group_id=eq.${encodeURIComponent(id)}&select=id&limit=1`,
+  );
+
+  if (items.length) {
+    throw new Error("No se puede eliminar un grupo que contiene imágenes.");
+  }
+
   await supabaseRestFetch<null>(`/gallery_groups?id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
 }

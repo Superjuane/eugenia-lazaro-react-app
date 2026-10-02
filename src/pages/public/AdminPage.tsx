@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { navigateTo } from "../../app/navigation";
 import { useAdminAuth } from "../../features/admin/AdminAuthContext";
+import { AdminImageEditor } from "../../features/admin/AdminImageEditor";
+import { DeleteImageDialog } from "../../features/admin/DeleteImageDialog";
 import { useGalleryData } from "../../features/gallery/GalleryDataContext";
 import type { GalleryImageUpload, GalleryItem } from "../../shared/types/gallery";
 
 const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 const maxImageSide = 2200;
+
+function today() {
+  const date = new Date();
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
 
 function toList(value: string) {
   return value
@@ -93,17 +100,29 @@ export function AdminPage() {
   const [loginError, setLoginError] = useState("");
   const [adminError, setAdminError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isPreparingImage, setIsPreparingImage] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<GalleryItem | null>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
   const [newGroupLabel, setNewGroupLabel] = useState("");
-  const [newItem, setNewItem] = useState({
+  const [newItem, setNewItem] = useState(() => ({
     title: "",
     category: "sillas",
     image: null as GalleryImageUpload | null,
     etiquetas: "",
     colors: "",
-    createdAt: "",
+    createdAt: today(),
     published: false,
     featured: false,
-  });
+  }));
+
+  async function runAdminAction(action: () => Promise<void>) {
+    setAdminError("");
+    try {
+      await action();
+    } catch (error) {
+      setAdminError(error instanceof Error ? error.message : "No se pudieron guardar los cambios.");
+    }
+  }
 
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -127,11 +146,14 @@ export function AdminPage() {
     }
 
     try {
+      setIsPreparingImage(true);
       setAdminError("");
       const image = await optimizeImage(file);
       setNewItem((currentItem) => ({ ...currentItem, image }));
     } catch (error) {
       setAdminError(error instanceof Error ? error.message : "No se pudo preparar la imagen.");
+    } finally {
+      setIsPreparingImage(false);
     }
   }
 
@@ -163,10 +185,11 @@ export function AdminPage() {
         image: null,
         etiquetas: "",
         colors: "",
-        createdAt: "",
+        createdAt: today(),
         published: false,
         featured: false,
       });
+      if (uploadInputRef.current) uploadInputRef.current.value = "";
     } catch (error) {
       setAdminError(error instanceof Error ? error.message : "No se pudo guardar la imagen.");
     } finally {
@@ -182,28 +205,6 @@ export function AdminPage() {
     } catch (error) {
       setAdminError(error instanceof Error ? error.message : "No se pudo guardar el grupo.");
     }
-  }
-
-  async function updateItemGroup(item: GalleryItem, groupId: string) {
-    const selectedGroup = groups.find((group) => group.id === groupId);
-
-    if (!selectedGroup) {
-      return;
-    }
-
-    await updateItem(item.id, {
-      category: selectedGroup.id,
-      categoryLabel: selectedGroup.label,
-      alt: `${item.title} - ${selectedGroup.label}`,
-    });
-  }
-
-  async function updateEtiquetas(item: GalleryItem, value: string) {
-    await updateItem(item.id, { etiquetas: toList(value) });
-  }
-
-  async function updateColors(item: GalleryItem, value: string) {
-    await updateItem(item.id, { colors: toList(value) });
   }
 
   if (isAuthLoading) {
@@ -239,7 +240,7 @@ export function AdminPage() {
 
   return (
     <section className="admin-page">
-      <div className="section-container admin-shell">
+      <div className="admin-shell">
         <aside className="admin-sidebar">
           <strong>Eugenia Pintura</strong>
           <button type="button" onClick={() => navigateTo("/")}>
@@ -256,122 +257,97 @@ export function AdminPage() {
         <div className="admin-main">
           <header className="admin-heading">
             <p className="eyebrow">Dashboard</p>
-            <h1>Galeria e imagenes</h1>
+            <h1>Galería e imágenes</h1>
           </header>
 
+          {adminError || galleryError ? <p className="form-status form-status-error" role="alert">{adminError || galleryError}</p> : null}
+
           <form className="admin-panel admin-add-form" onSubmit={handleAddItem}>
-            <h2>Anadir imagen</h2>
+            <h2>Añadir imagen</h2>
             <label className="admin-upload-field">
               Imagen
-              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => void handleImageUpload(event)} required={!newItem.image} />
+              <input ref={uploadInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => void handleImageUpload(event)} required={!newItem.image} disabled={isSaving || isPreparingImage} />
             </label>
-            {newItem.image ? <img className="admin-upload-preview" src={newItem.image.dataUrl} alt="Vista previa" /> : null}
-            <input placeholder="Titulo" value={newItem.title} onChange={(event) => setNewItem({ ...newItem, title: event.target.value })} required />
-            <select
-              value={newItem.category}
-              onChange={(event) => setNewItem({ ...newItem, category: event.target.value })}
-              required
-            >
-              {groups.map((group) => (
-                <option key={group.id} value={group.id}>
-                  {group.label}
-                </option>
-              ))}
-            </select>
-            <input
-              placeholder="Etiquetas separadas por coma"
-              value={newItem.etiquetas}
-              onChange={(event) => setNewItem({ ...newItem, etiquetas: event.target.value })}
-            />
-            <input
-              placeholder="Color separado por coma"
-              value={newItem.colors}
-              onChange={(event) => setNewItem({ ...newItem, colors: event.target.value })}
-            />
-            <input
-              type="date"
-              value={newItem.createdAt}
-              onChange={(event) => setNewItem({ ...newItem, createdAt: event.target.value })}
-            />
-            <label className="admin-check">
-              <input type="checkbox" checked={newItem.published} onChange={(event) => setNewItem({ ...newItem, published: event.target.checked })} />
-              Publicada
+            <div className="admin-upload-preview-area">
+              {newItem.image ? (
+                <img className="admin-upload-preview" src={newItem.image.dataUrl} alt="Vista previa de la nueva imagen" />
+              ) : <div className="admin-upload-placeholder">Vista previa de la imagen</div>}
+            </div>
+            <label>
+              Título
+              <input placeholder="Título de la imagen" value={newItem.title} onChange={(event) => setNewItem({ ...newItem, title: event.target.value })} required />
             </label>
-            <label className="admin-check">
-              <input type="checkbox" checked={newItem.featured} onChange={(event) => setNewItem({ ...newItem, featured: event.target.checked })} />
-              Destacada
+            <div className="admin-field-pair">
+              <label>
+                Grupo
+                <select value={groups.some((group) => group.id === newItem.category) ? newItem.category : groups[0]?.id ?? ""} onChange={(event) => setNewItem({ ...newItem, category: event.target.value })} required>
+                  {groups.map((group) => <option key={group.id} value={group.id}>{group.label}</option>)}
+                </select>
+              </label>
+              <label>
+                Fecha
+                <input type="date" value={newItem.createdAt} onChange={(event) => setNewItem({ ...newItem, createdAt: event.target.value })} required />
+              </label>
+            </div>
+            <label>
+              Etiquetas
+              <input placeholder="Separadas por coma" value={newItem.etiquetas} onChange={(event) => setNewItem({ ...newItem, etiquetas: event.target.value })} />
             </label>
-            <button className="form-submit" type="submit" disabled={isSaving}>
-              {isSaving ? "Guardando..." : "Anadir"}
+            <label>
+              Colores
+              <input placeholder="Separados por coma" value={newItem.colors} onChange={(event) => setNewItem({ ...newItem, colors: event.target.value })} />
+            </label>
+            <div className="admin-item-actions">
+              <label className="admin-check">
+                <input type="checkbox" checked={newItem.published} onChange={(event) => setNewItem({ ...newItem, published: event.target.checked })} />
+                Publicada
+              </label>
+              <label className="admin-check">
+                <input type="checkbox" checked={newItem.featured} onChange={(event) => setNewItem({ ...newItem, featured: event.target.checked })} />
+                Destacada
+              </label>
+            </div>
+            <button className="form-submit" type="submit" disabled={isSaving || isPreparingImage}>
+              {isSaving ? "Guardando…" : isPreparingImage ? "Preparando imagen…" : "Guardar y Subir"}
             </button>
-            {adminError || galleryError ? <p className="form-status form-status-error">{adminError || galleryError}</p> : null}
             {isGalleryLoading ? <p className="form-status">Cargando galeria...</p> : null}
           </form>
 
           <section className="admin-panel admin-groups-panel">
             <h2>Grupos</h2>
             <form className="admin-group-add" onSubmit={handleAddGroup}>
-              <input placeholder="Nuevo grupo" value={newGroupLabel} onChange={(event) => setNewGroupLabel(event.target.value)} />
-              <button type="submit">Anadir grupo</button>
+              <input aria-label="Nombre del nuevo grupo" placeholder="Nuevo grupo" value={newGroupLabel} onChange={(event) => setNewGroupLabel(event.target.value)} required />
+              <button type="submit">Añadir grupo</button>
             </form>
             <div className="admin-group-list">
-              {groups.map((group) => (
-                <article key={group.id} className="admin-group-row">
-                  <input defaultValue={group.label} onBlur={(event) => void updateGroup(group.id, event.target.value)} />
-                  <button type="button" onClick={() => void deleteGroup(group.id)} disabled={groups.length <= 1}>
-                    Eliminar
-                  </button>
-                </article>
-              ))}
+              {groups.map((group) => {
+                const imageCount = items.filter((item) => item.category === group.id).length;
+                return (
+                  <article key={group.id} className="admin-group-row">
+                    <div className="admin-group-name">
+                      <input aria-label={`Nombre del grupo ${group.label}`} defaultValue={group.label} onBlur={(event) => {
+                        const label = event.target.value;
+                        if (label !== group.label) void runAdminAction(() => updateGroup(group.id, label));
+                      }} />
+                      <small>{imageCount} {imageCount === 1 ? "imagen" : "imágenes"}</small>
+                    </div>
+                    <button type="button" onClick={() => void runAdminAction(() => deleteGroup(group.id))} disabled={imageCount > 0 || groups.length <= 1} title={imageCount > 0 ? "El grupo contiene imágenes" : groups.length <= 1 ? "Debe quedar al menos un grupo" : undefined}>
+                      Eliminar
+                    </button>
+                  </article>
+                );
+              })}
             </div>
           </section>
 
           <div className="admin-image-list">
             {items.map((item) => (
-              <article className="admin-image-row" key={item.id}>
-                <img src={item.thumbnailUrl} alt={item.alt} />
-                <div>
-                  <strong>{item.title}</strong>
-                  <span>{item.categoryLabel}</span>
-                </div>
-                <label>
-                  Grupo
-                  <select value={item.category} onChange={(event) => void updateItemGroup(item, event.target.value)}>
-                    {groups.map((group) => (
-                      <option key={group.id} value={group.id}>
-                        {group.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Etiquetas
-                  <input defaultValue={item.etiquetas.join(", ")} onBlur={(event) => void updateEtiquetas(item, event.target.value)} />
-                </label>
-                <label>
-                  Color
-                  <input defaultValue={item.colors.join(", ")} onBlur={(event) => void updateColors(item, event.target.value)} />
-                </label>
-                <label>
-                  Fecha
-                  <input type="date" defaultValue={item.createdAt} onBlur={(event) => void updateItem(item.id, { createdAt: event.target.value })} />
-                </label>
-                <label className="admin-check">
-                  <input type="checkbox" defaultChecked={item.published} onChange={(event) => void updateItem(item.id, { published: event.target.checked })} />
-                  Publicada
-                </label>
-                <label className="admin-check">
-                  <input type="checkbox" defaultChecked={item.featured} onChange={(event) => void updateItem(item.id, { featured: event.target.checked })} />
-                  Destacada
-                </label>
-                <button type="button" onClick={() => void deleteItem(item.id)}>
-                  Eliminar
-                </button>
-              </article>
+              <AdminImageEditor key={item.id} item={item} groups={groups} onSave={updateItem} onDelete={setDeleteTarget} />
             ))}
           </div>
         </div>
       </div>
+      {deleteTarget ? <DeleteImageDialog item={deleteTarget} onDelete={deleteItem} onClose={() => setDeleteTarget(null)} /> : null}
     </section>
   );
 }

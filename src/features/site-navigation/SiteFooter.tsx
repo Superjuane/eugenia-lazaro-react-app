@@ -19,7 +19,7 @@ export function SiteFooter() {
         <span>{siteConfig.subtitle}</span>
       </div>
       <div>
-        <span>{contactInfo.publicEmailLabel}</span>
+        <span>{contactInfo.websiteLabel}</span>
         <span>{contactInfo.location}</span>
       </div>
       <div>

@@ -7,20 +7,16 @@ export const siteConfig = {
 };
 
 export const contactInfo = {
-  publicEmailLabel: "eugenialazaro.com",
-  receiverEmail: "juaneolivan@gmail.com",
+  websiteLabel: "eugenialazaro.com",
   phoneLabel: "+34 608 180 159",
-  phoneHref: "+34608180159",
+  whatsappUrl: "https://wa.me/34608180159",
   location: "Mora d'Ebre, Tarragona",
-  formEndpoint: "/api/contact",
 };
 
 export const mainNavigation: NavigationItem[] = [
   { label: "Inicio", href: "/" },
-  { label: "Galeria", href: "/Gallery" },
-  { label: "Navidad", href: "/navidad" },
-  { label: "Proceso", href: "/proceso" },
-  { label: "Precios", href: "/#pricing" },
+  { label: "Galeria", href: "/gallery" },
+  { label: "Precios", href: "/gallery" },
   { label: "FAQ", href: "/#faq" },
   { label: "Contacto", href: "/#contact" },
 ];
@@ -39,7 +35,7 @@ export const faqItems = [
   },
   {
     question: "Puedo enviar una idea o una imagen de referencia?",
-    answer: "Si. Puedes escribir por email con la idea, el nombre, colores o cualquier referencia que ayude a preparar la pieza.",
+    answer: "Sí. Puedes escribir por WhatsApp con la idea, el nombre, colores o cualquier referencia que ayude a preparar la pieza.",
   },
   {
     question: "Donde se realiza el trabajo?",
